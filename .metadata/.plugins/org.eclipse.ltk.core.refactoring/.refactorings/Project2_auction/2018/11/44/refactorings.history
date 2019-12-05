@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;CharEncodingFilter.java&apos; to &apos;mybatis_house/src/main/java/com.accp.mybatis_house.filter&apos;&#x0D;&#x0A;- Original project: &apos;Project2_auction&apos;&#x0D;&#x0A;- Destination element: &apos;mybatis_house/src/main/java/com.accp.mybatis_house.filter&apos;&#x0D;&#x0A;- Original element: &apos;com.accp.project.filter.CharEncodingFilter.java&apos;" description="Copy compilation unit" destination="=mybatis_house/src\/main\/java&lt;com.accp.mybatis_house.filter" element1="/src&lt;com.accp.project.filter{CharEncodingFilter.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1541032475462" units="1" version="1.0"/>
+</session>

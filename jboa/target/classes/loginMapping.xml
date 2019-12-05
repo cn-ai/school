@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.accp.jboa.dao.ILoginDao">
+<resultMap type="employee" id="loginmap">
+	<id column="employeeid" property="employeeid"/>
+	<result column="employeename" property="employeename"/>
+	<result column="password" property="password"/>
+	<result column="status" property="status"/>
+	<association property="department" column="departmentid" select="querydepartment"></association>
+	<association property="position" column="positionid" select="queryopsition"></association>
+</resultMap>
+<!-- 登录 -->
+	<select id="Login" resultMap="loginmap">
+		select * from employee where employeename=#{employeename} and password=#{password}
+	</select>
+<!-- 查询子表departmentid部门 -->	
+	<select id="querydepartment" resultType="department">
+		select * from department where departmentid=#{0}
+	</select>
+	
+<!-- 查询子表position职位 -->
+	<select id="queryopsition" resultType="tb_opsition">
+		select * from tb_opsition where positionid=#{0}
+	</select>
+</mapper>

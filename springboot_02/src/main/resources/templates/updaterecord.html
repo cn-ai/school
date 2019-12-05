@@ -1,0 +1,35 @@
+<!DOCTYPE html >
+
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>修改奖惩记录</title>
+	</head>
+	<body>
+		<form action="/c/users/updaterecord" method="post">
+			<input type="hidden" th:value="${record.rid}" name="rid">
+			<input type="hidden" th:value="${session.stu.stuname}" name="createBy">
+			<p> 
+				<label>奖惩记录名:</label>
+				<input type="text" name="rname" th:value="${record.rname}">*
+			</p>
+			<p>
+				<label>奖惩对象:</label>
+				<select name="stucode" >
+				
+					<option th:each="temp,i:${list}" th:value="${temp.code}" th:selected="(${temp.code}==${recode.stucode})">[[${temp.stuname}]]</option>
+					
+				</select>
+			</p>
+			<p>
+				<label>描述:</label>
+				<textarea name="des">[[${record.des}]]</textarea>
+			</p>
+			<p>
+				<input type="submit" value="保存"/>
+				<input type="button" value="取消"/>
+			
+			</p>
+		</form>
+	</body>
+</html>

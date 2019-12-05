@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.accp.Vote.dao.ISubjectDao">
+	<sql id="query">select * from  </sql>
+	<!-- 投票与选项表 -->
+	<resultMap type="subject" id="Subject">
+		<id column="id" property="id" />
+		<result column="title"  property="title"/>
+		<result column="type"  property="type"/>
+		<result column="startdate"  property="startdate"/>
+		<result column="overdate"  property="overdate"/>
+		<result column="join"  property="join"/>
+		<result column="way"  property="way"/>
+		<result column="uid"  property="uid"/>
+		<result column="stoptype"  property="stoptype"/>
+		<collection property="option" column="id"  select="queryoption">
+			<id column="id" property="id"/>
+			<result column="option"  property="option"/>
+			<result column="sid"  property="sid"/>
+		</collection>
+	</resultMap>
+	<!-- 主查询：投票标题和选项表 -->
+	<select id="querySubject" resultMap="Subject">
+		<include refid="query"/> `subject`
+		where 1=1
+			<if test="subject.id!=null">
+				AND id = #{subject.id}
+			</if>
+			<if test="subject.uid!=null">
+				AND uid = #{subject.uid}
+			</if>
+			<if test="subject.title!=null and subject.title!=''">
+				AND title like '%${subject.title}%'
+			</if>
+			<if test="type==null or type ==''">
+				AND stoptype = 0
+				AND NOW() &gt; `startdate` AND DATE_SUB(NOW(), INTERVAL 1 DAY) &lt;  `overdate`
+			</if>
+			
+			<if test="type!=null and type !=''">
+				AND stoptype  = #{type}
+			</if>
+			 
+	</select>
+	<!-- 副查询：选项表 -->
+	<select id="queryoption" resultType="option">
+		SELECT * FROM `option`
+		WHERE `sid` = #{0}
+	</select>
+	<!-- <resultMap type="vo_message" id="Vo">
+		<id column="id" property="id"/>
+			<result column="sid" property="sid"/>
+			<result column="content" property="content"/>
+			<result column="uid" property="uid"/>
+			<result column="uname" property="uname"/>
+			<result column="caretedate" property="caretedate"/>
+			<collection property="revert" javaType="vo_revert">
+				<id column="id" property="id"/>
+				<result column="mid" property="mid"/>
+				<result column="content" property="content"/>
+				<result column="uid" property="uid"/>
+				<result column="caretedate" property="caretedate"/>
+				<result column="uname" property="uname"/>
+			</collection>
+	</resultMap> -->
+	<!-- 主查询：留言表 -->
+	<!-- <select id="querymessage" resultType="vo_message">
+		<include refid="query"/> `messages`
+		where `sid` = #{0}
+	</select> -->
+	<!-- 副查询：选项取值表 -->
+	<!-- <select id="queryitem" resultType="item">
+		<include refid="query"/> `item` 
+		where sid = #{0}
+	</select> -->
+	
+	<!-- 修改停用状态 -->
+	<update id="updateSubjectType">
+		UPDATE 
+		  `subject` 
+		SET
+		  `stoptype` = #{subject.stoptype}
+		WHERE `id` =  #{subject.id};
+	</update>
+	<!-- 新增投票 -->
+	<insert id="saveSubject"  useGeneratedKeys="true" keyProperty="subject.id" parameterType="subject">
+		INSERT INTO `subject` (
+		  `title`,
+		  `type`,
+		  `startdate`,
+		  `overdate`,
+		  `way`,
+		  `uid`
+		) 
+		VALUES
+		  (
+		    #{subject.title},
+		    #{subject.type},
+		    #{subject.startdate,jdbcType=DATE},
+		    #{subject.overdate,jdbcType=DATE},
+		    #{subject.way},
+		    #{subject.uid}) ;
+	</insert>
+	<!-- 新增投票选项 -->
+	<insert id="saveOptions" >
+		INSERT INTO `option` (`option`, `sid`) 
+		VALUES
+		<foreach collection="options" item="item" separator=",">
+			('${item.option}',#{id})
+		</foreach>
+	</insert>
+	<!-- 用户参与投票 -->
+	<insert id="saveItems">
+		<foreach collection="Items" item="item" >
+			INSERT INTO `item` (`sid`, `oid` , `uid` ,createdate) 
+			VALUES
+			  (#{item.sid},#{item.oid},#{item.uid},NOW()) ;
+		</foreach>
+	</insert>
+	<!-- 修改参与投票人数 -->
+	<update id="updateJoin">
+			update `subject`
+			set `join` = `join` +  1
+			where id = #{sid};
+	</update>
+	<!-- 查询用户投票是否符合投票机制 -->
+	<select id="queryWay" resultType="java.lang.Integer">
+		<if test="way==1">
+			SELECT IFNULL(DATEDIFF(CURDATE(),MAX(createDate)),-1) FROM item WHERE sid = #{item.sid} AND uid = #{item.uid}
+		</if>
+		<if test="way==0">
+			SELECT Count(*) FROM item WHERE sid = #{item.sid} AND uid = #{item.uid}
+		</if>
+	</select>
+	<!-- 每天晚上自动停止已到期的投票 -->
+	<update id="updateStoptype" >
+		UPDATE `subject` SET `stoptype` = 2 WHERE NOW()+1 >  `overdate`
+	</update>
+	<!-- 修改投票信息 -->
+	<update id="updateSubject">
+		UPDATE 
+		  `subject` 
+		SET
+		  `title` = #{subject.title},
+		  `type` = #{subject.type},
+		  `startdate` = #{subject.startdate,jdbcType=DATE},
+		  `overdate` = #{subject.overdate,jdbcType=DATE},
+		  `join` = 0,
+		  `way` = #{subject.way},
+		  `uid` = #{subject.uid}
+		WHERE `id` = #{subject.id} ;
+	</update>
+	<!-- 删除修改之前的选项以及之前用户参与的选项 -->
+	<delete id="deleteOptions">
+		DELETE 
+		FROM
+		  `option` 
+		WHERE `sid` = #{id} ;
+		DELETE 
+		FROM
+		  `item` 
+		WHERE `sid` = #{id} ;
+	</delete>
+	<!-- 选项与选项数量 -->
+	<resultMap type="option" id="Options">
+		<id column="id" property="id" />
+		<result column="option"  property="option"/>
+		<result column="sid"  property="sid"/>
+		<collection property="item" column="id"  select="queryItem">
+			<id column="id" property="id"/>
+			<result column="sid"  property="sid"/>
+			<result column="oid"  property="oid"/>
+			<result column="uid"  property="uid"/>
+			<result column="caretedate"  property="caretedate"/>
+		</collection>
+	</resultMap>
+	<!-- 主查询：查询选项 -->
+	<select id="queryItems" resultMap="Options">
+		<include refid="query"/> `option` where `sid` = #{sid}
+	</select>
+	<!-- 副查询：选项数量 -->
+	<select id="queryItem" resultType="item">
+		<include refid="query"/> `item` where `oid` = #{0} 
+	</select>
+	
+</mapper>    

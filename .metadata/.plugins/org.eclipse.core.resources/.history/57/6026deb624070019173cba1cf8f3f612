@@ -1,0 +1,33 @@
+package com.example.demo.ws;
+
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.server.ServerEndpoint;
+
+import org.springframework.stereotype.Component;
+
+//1.配置站点
+@ServerEndpoint("/ws/test")
+@Component
+public class MyWebSocketHandler {
+	@OnOpen
+	public void onopen(Session session) {
+		System.out.println("服务器端接收客户端长连接构建成功");
+	}
+	@OnClose
+	public void onclose(Session session) {
+		System.out.println("客户端关闭");
+	}
+	@OnError
+	public void onerror(Session session,Throwable e) {
+		System.out.println("连接异常");
+	}
+	//这个方法的参数位置不能更改
+	@OnMessage
+	public void onopen(String msg,Session session) {
+		System.out.println("服务器端和客户端通讯");
+	}
+}

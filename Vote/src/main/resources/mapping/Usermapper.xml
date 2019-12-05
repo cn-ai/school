@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.accp.Vote.dao.IUserDao">
+	<sql id="query">select * from  </sql>
+	<!-- 用户表 -->
+	<select id="queryUser" resultType="user">
+		<include refid="query"/> user
+		<where>
+			<if test="user.uid!=null">
+				AND uid = #{user.uid}
+			</if>
+			<if test="user.uname!=null">
+				AND uname = #{user.uname}
+			</if>
+		</where>
+	</select>
+	<insert id="saveUser" >
+		INSERT INTO `user` ( `uname`, `upwd`) 
+		VALUES
+		  ('${user.uname}', '${user.upwd}') ;
+	</insert>
+	<!-- 投票表 -->
+	<select id="querySubject">
+		<include refid="query"/> subject
+	</select>
+</mapper>    

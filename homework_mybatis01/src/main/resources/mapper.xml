@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <!-- 命名空间 唯一 -->
+    <mapper namespace="com.accp.DemoDao">
+    <!-- .查询所有会员信息使用map封装查询结果【多列多行】 -->
+    	<!-- <select id="selectAll" resultType="map">
+    		select * from teststudent 
+    	</select> -->
+    <!-- 可用实体查询 -->
+    	<select id="selectAll" resultType="com.accp.entity.Student">
+    		select * from teststudent 
+    	</select>
+    
+    <!-- 2.查询指定会员编号的会员信息【多列单行】 -->
+    <!-- #{下标} #{key}-->
+    <select id="selectById" resultType="com.accp.entity.Student" parameterType="int">
+    	select * from teststudent where id=#{id}
+    </select>
+    
+    <!-- 3.统计未成年会员人数【单列单行，转义关系符】 -->
+    	<select id="queryCount" resultType="Long">
+    		SELECT  COUNT(*) 
+    		FROM testStudent 
+    		WHERE 
+    		EXTRACT(YEAR FROM SYSDATE())- EXTRACT( YEAR FROM  brithday)&lt;18   		
+    	</select>
+  <!-- 模糊查询姓李的女孩信息【多列多行】 -->
+     <select id="queryLike" resultType="com.accp.entity.Student" parameterType="map">
+    	SELECT * FROM testStudent WHERE `name` LIKE '${name}%' AND sex='${sex}'
+    </select>	
+     <!-- #{属性名} -->
+    <!-- 5.新增会员信息【日期处理，jdbcType=DATE】 -->
+    <insert id="save" parameterType="com.accp.entity.Student">
+    		insert into testStudent(name,sex,brithday,img) values(#{name},#{sex},#{brithday,jdbcType=DATE},#{img})
+    </insert>
+    
+    <delete id="del" parameterType="int">
+    		delete from testStudent where id=#{0}
+    </delete>
+    <!-- #{属性名} -->
+    <update id="update" parameterType="com.accp.entity.Student">
+    	update teststudent set name=#{name} ,sex=#{sex},brithday=#{brithday}, img=#{img} where id=#{id}
+    </update>
+    </mapper>	
+    

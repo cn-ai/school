@@ -1,0 +1,18 @@
+package com.example.demo.ws;
+
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.server.ServerEndpoint;
+
+import org.springframework.stereotype.Component;
+
+//1.配置站点
+@ServerEndpoint("/ws/test")
+@Component
+public class MyWebSocketHandler {
+	@OnOpen
+	public void onopen(Session session) {
+		System.out.println("服务器端接收客户端长连接构建成功");
+	}
+	
+}

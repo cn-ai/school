@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<div style="margin-top: 50px;margin-left: 50px;">
+			<h2>您的账户余额是：</h2>
+			<h3 style="margin-left: 30px;">人民币：<span id="moery"></span>元</h3>
+		</div>
+	</body>
+	<script type="text/javascript" src="/spring_3/js/jquery-1.8.3.js"></script>
+	<script type="text/javascript">
+	$(function(){
+	var cardno=window.sessionStorage.getItem("cardno");
+	$.post("/spring_3/c/account",{"method":"queryBalance","cardno":cardno},function(json){
+		$("#moery").text(json.balance);
+	},"json");
+	})
+	</script>
+</html>

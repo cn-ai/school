@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>添加</title>
+</head>
+<body>
+<h2>添加空气质量信息</h2>
+<form action="/add" method="post">
+<p>监测区域：
+	<select name="districtid">
+			<option th:each="temp,i:${dlist}" th:value="${temp.id}">[[${temp.name}]]</option>
+		</select>
+</p>
+<p>
+监测日期：<input type="date" name="monitortime">
+</p>
+<p>
+PM10值：<input type="text" name="pm10">
+</p>
+<p>
+PM2.5值：<input type="text" name="pm25">
+</p>
+<p>
+监测站：<input type="text" name="monitoringstation">
+</p>
+<p>
+
+<p>
+	<input type="submit" value="保存">
+	<input type="button" value="重置">
+	<input type="button" value="返回">
+</p>
+</form>
+</body>
+</html>

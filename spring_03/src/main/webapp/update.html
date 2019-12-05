@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			 ul li{
+			 	margin-top: 10px;
+			 }
+		</style>
+	</head>
+	<body>
+		<div style="margin-top: 30px;margin-left: 50px;">
+			<h3>当前操作：转账。请输入转入账号和金额后点“转账”按钮</h3>
+			<ul style="list-style-type: none;">
+				<li>转入账号：<input type="text" placeholder="请输入转入账户" name="zh"></li>
+				<li>转账金额：<input type="text" placeholder="请输入转入金额" name="money"></li>
+				<li><input type="button" value="转账" style="margin-left: 100px;"></li>
+			</ul>
+		</div>
+	</body>
+	<script type="text/javascript" src="/spring_3/js/jquery-1.8.3.js"></script>
+	<script type="text/javascript">
+	$("[type=button]").click(function(){
+		var zh=$("[name=zh]").val();
+		var money=$("[name=money]").val();
+		if(zh.lenght<16){
+			alert("请正确填写要转入的16位账号");
+		}else if(isNaN(money)==true){
+			alert("金额必须为数字");
+		}/* else if(reg.test(money)==false){
+			alert("请正确填写转账金额");
+		} */else{
+		var cardno=window.sessionStorage.getItem("cardno");
+	$.post("/spring_3/c/account",{"method":"queryBalance","cardno":cardno},function(json){
+		var q=json.balance;
+		
+		var strjson={};
+		
+		strjson["cardno"]=cardno;
+		strjson["transactionDate"]=new Date();
+		strjson["expense"]=money;
+		strjson["balance"]=q-money;		
+		strjson["transactionType"]="消费";
+		var strobj=JSON.stringify(strjson);
+		
+		$.post("/spring_3/c/account",{"method":"addRecord","cardno":zh,"money":money,"strobj":strobj},function(txt){
+			
+		});
+		//修改用户表
+		var jsons={};
+		jsons["cardno"]=cardno;
+		jsons["balance"]=q-money;
+		var strxg1=JSON.stringify(jsons);
+	
+		$.post("/spring_3/c/account",{"method":"updateAccount","cardno":zh,"money":money,"strxg1":strxg1},function(txt){
+			
+		})
+	},"json");
+	$.post("/spring_3/c/account",{"method":"queryBalance","cardno":cardno},function(json){
+		var q=json.balance;
+		var strjson2={};
+		strjson2["cardno"]=zh;
+		strjson2["transactionDate"]=new Date();
+		strjson2["income"]=money;
+		strjson2["balance"]=json.balance+money;	
+		strjson2["transactionType"]="存款";
+		var strobj2=JSON.stringify(strjson2);
+		
+		$.post("/spring_3/c/account",{"method":"addRecord2","cardno":zh,"money":money,"strobj2":strobj2},function(txt){
+	
+		});
+		//修改用户表
+		var jsons={};
+		jsons["cardno"]=zh;
+		jsons["balance"]=q+money;
+		var strxg1=JSON.stringify(jsons);
+		$.post("/spring_3/c/account",{"method":"updateAccount","cardno":zh,"money":money,"strxg1":strxg1},function(txt){	
+		})
+	},"json");
+	
+	
+	
+		} 
+		
+		
+	})
+	</script>
+</html>

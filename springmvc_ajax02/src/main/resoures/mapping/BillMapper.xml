@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.accp.ajax.dao.IBillAndDetailDao">
+
+<!-- 新增 -->
+<insert id="addBillAndDetail">
+	INSERT INTO tb_bill 
+		(billno,billdate,suppliername,supplieraddress,department,warehouse,buyer,executor)
+	VALUE(#{bill.billno},#{bill.billdate},#{bill.suppliername},#{bill.supplieraddress},#{bill.department},#{bill.warehouse},#{bill.buyer},#{bill.executor});
+	<if test="bill.detail.size()!=0">
+		INSERT INTO tb_detail(billno,goodsname,goodsnum,goodsprice,goodsmoneyamt,ispresent) value
+		<foreach collection="bill.detail" item="temp" separator=",">
+		(#{bill.billno},#{temp.goodsname},#{temp.goodsnum},#{temp.goodsprice},#{temp.goodsmoneyamt},#{temp.ispresent})
+		</foreach>
+	</if>
+</insert>
+
+<resultMap type="TB_Bill" id="billmap">
+	<result column="billno" property="billno"/>
+	<result column="billdate" property="billdate"/>
+	<result column="suppliername" property="suppliername"/>
+	<result column="supplieraddress" property="supplieraddress"/>
+	<result column="department" property="department"/>
+	<result column="warehouse" property="warehouse"/>
+	<result column="buyer" property="buyer"/>
+	<result column="executor" property="executor"/>
+	<collection property="detail" select="loaddetail" column="billno"></collection>
+</resultMap>
+
+<!-- 查询最大 (主表)-->
+<select id="loadBill" resultMap="billmap">
+	SELECT * FROM tb_bill WHERE billno=(SELECT MAX(billno) FROM tb_bill) 
+</select>
+<!-- 子表 -->
+<select id="loaddetail" resultType="Tb_Detail">
+	SELECT * FROM tb_detail WHERE billno=(SELECT MAX(billno) FROM tb_detail) and billno=#{billno} 
+</select>
+</mapper>

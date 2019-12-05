@@ -1,0 +1,16 @@
+127.0.0.1 - - [15/Nov/2018:11:44:48 +0800] "GET / HTTP/1.1" 404 1074
+0:0:0:0:0:0:0:1 - - [15/Nov/2018:11:48:59 +0800] "GET /spring_vote/login.jsp HTTP/1.1" 404 1099
+0:0:0:0:0:0:0:1 - - [15/Nov/2018:11:49:00 +0800] "GET /favicon.ico HTTP/1.1" 404 1085
+0:0:0:0:0:0:0:1 - - [15/Nov/2018:11:50:16 +0800] "GET /spring_vote/login.jsp HTTP/1.1" 404 1099
+0:0:0:0:0:0:0:1 - - [15/Nov/2018:11:50:18 +0800] "GET /spring_vote/login.jsp HTTP/1.1" 404 1099
+0:0:0:0:0:0:0:1 - - [15/Nov/2018:11:50:19 +0800] "GET /spring_vote/login.jsp HTTP/1.1" 404 1099
+0:0:0:0:0:0:0:1 - - [15/Nov/2018:11:50:19 +0800] "GET /favicon.ico HTTP/1.1" 404 1085
+127.0.0.1 - - [15/Nov/2018:11:50:57 +0800] "GET / HTTP/1.1" 404 1074
+0:0:0:0:0:0:0:1 - - [15/Nov/2018:11:51:05 +0800] "GET /spring_vote/login.jsp HTTP/1.1" 200 2115
+0:0:0:0:0:0:0:1 - - [15/Nov/2018:11:51:05 +0800] "GET /spring_vote/css/style.css HTTP/1.1" 200 6120
+0:0:0:0:0:0:0:1 - - [15/Nov/2018:11:51:05 +0800] "GET /spring_vote/images/logo.gif HTTP/1.1" 200 6079
+0:0:0:0:0:0:0:1 - - [15/Nov/2018:11:51:05 +0800] "GET /spring_vote/js/jquery-1.8.3.js HTTP/1.1" 200 275529
+0:0:0:0:0:0:0:1 - - [15/Nov/2018:11:51:05 +0800] "GET /spring_vote/images/voteBanner.jpg HTTP/1.1" 200 64778
+0:0:0:0:0:0:0:1 - - [15/Nov/2018:11:51:05 +0800] "GET /spring_vote/images/button_login.gif HTTP/1.1" 200 1451
+0:0:0:0:0:0:0:1 - - [15/Nov/2018:11:51:05 +0800] "GET /spring_vote/images/arrow_down.gif HTTP/1.1" 200 149
+0:0:0:0:0:0:0:1 - - [15/Nov/2018:11:51:05 +0800] "GET /spring_vote/images/bannerCorner.jpg HTTP/1.1" 200 19456

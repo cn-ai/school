@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+    <mapper namespace="com.accp.mybatis_house.dao.IHouseDao">
+        <sql id="queryAll">
+    SELECT i.*,t.*,d.* FROM info i INNER JOIN `type` t ON i.`typeid`=t.`tid`
+			INNER JOIN  district d ON i.`did`=d.`id`
+			INNER JOIN  `user` u ON i.`uid`=u.`uid`
+    </sql>
+    <!-- 查询房屋详情 -->	
+ 	<select id="queryVo" resultType="vo">
+		<include refid="queryAll"/>
+		<where>
+			<if test="o.status!=-1 and o.status!=null">
+				and i.status=#{o.status}
+			</if>
+		<!-- 模糊查询 -->
+			<if test="o.title!=null">
+				and	i.`title` LIKE '%${o.title}%'
+			</if>
+		<!--根据地区查询  -->
+			<if test="o.did!=null and !o.did.equals('') and !o.did.equals('null') and o.did!=''">
+				and i.did=#{o.did} 
+			</if>
+		<!--根据房型  -->
+			<if test="o.typeid!=null and !o.typeid.equals('') and !o.typeid.equals('null') and o.typeid!=''">
+				and i.typeid=#{o.typeid}
+			</if>
+		<!--根据面积查询  -->
+			<if test="o.areaid!='' and o.areaid!=null ">
+				and i.areaid=#{o.areaid}
+			</if>
+		<!--根据开始价格查询  -->
+			<if test="priceBegin!='' and priceBegin!=null">
+				and i.price&gt;=#{priceBegin}
+			</if>
+		<!--根据最大价格查询  -->
+			<if test="priceEnd!='' and  priceEnd!=null">
+				and i.price&lt;#{priceEnd}
+			</if>
+			<if test="o.uid!=null and o.uid!=''">
+				and i.uid=#{o.uid}
+			</if>
+		</where>	
+		<!-- 排序 -->
+				
+			 <if test="search!=null and search!=''">
+			 
+				<if test="search.equals('newon')">
+					order by i.areaid desc
+				</if>
+				<if test="search.equals('time')">
+					order by i.fabutime desc
+				</if>
+				<if test="search.equals('desc')">
+					order by i.price desc
+				</if>
+				<if test="search.equals('asc')">
+					order by i.price
+				</if>
+			</if> 
+	</select> 
+<!-- 查询详情 -->
+	<select id="loadHouse" resultType="vo">
+		<include refid="queryAll" />
+		<where>
+			<if test="hid!=null">
+				and hid=#{hid}
+			</if>
+		</where>
+	</select> 
+<!-- 新增房屋 -->
+	<insert id="addInfo" >
+		INSERT INTO info
+		(hid,title,typeid,areaid,price,property_date,phone,detail,did,stid,uid,fabutime,addressdetail,status)
+		VALUES
+		(#{info.hid},#{info.title},#{info.typeid},#{info.areaid},#{info.price},#{info.propertyDate},#{info.phone},#{info.detail},#{info.did},#{info.stid},#{info.uid},#{info.fabutime},#{info.addressDetail},#{info.status})
+	<selectKey keyProperty="info.hid" resultType="String" order="AFTER" keyColumn="hid">
+			SELECT MAX(hid)+1 FROM info
+	</selectKey>
+	</insert>
+<!-- 获取刚新增的id -->
+	<select id="queryInfoById" resultType="String">
+		SELECT hid FROM info 
+		WHERE hid =( 
+				SELECT hid
+				FROM info
+				WHERE RIGHT(hid,LENGTH(hid)-9) =(
+					SELECT MAX(CAST(RIGHT(hid,LENGTH(hid)-9) AS SIGNED))
+					FROM info 
+				) =1
+		)
+	</select>
+	<!-- 获取房屋末尾自增id -->
+	<select id="queryInfoByAtuoId" resultType="int">
+		SELECT MAX(CAST(RIGHT(hid,LENGTH(hid)-9) AS SIGNED)) FROM info 
+	</select>
+<!-- 新增图片 -->
+	<insert id="addImg">
+		INSERT INTO img(address,manageid) VALUES(#{img.address},#{img.manageid});
+
+	</insert>
+<!-- 读取首页图片-->
+<select id="loadImg" resultType="img">
+	 SELECT imgid, address FROM img WHERE manageid=#{byId} LIMIT 0,1
+</select>
+<!-- 修改信息 -->
+<update id="updateInfo">
+	update info 
+	<set>
+		<if test="info.status!=null">
+			status=#{info.status},
+		</if>
+		<if test="info.title!=null">
+			title=#{info.title},
+		</if>
+		<if test="info.price!=null and info.price!=0">
+			price=#{info.price},
+		</if>
+		<if test="info.addressDetail!=null">
+			addressdetail=#{info.addressDetail},
+		</if>
+		<if test="info.detail!=null">
+			detail=#{info.detail},
+		</if>
+		<if test="info.count!=null">
+			count=#{info.count}+1
+		</if>
+	</set>
+	<where>
+		<if test="info.hid!=null">
+			hid=#{info.hid}
+		</if>
+	</where>
+</update>
+<!-- 加载单个房屋信息 -->
+<select id="loadInfo" resultType="info">
+	select * from info where hid=#{hid}
+</select>
+
+<delete id="delInfo">
+	delete from info where hid=#{hid}
+</delete>
+<!-- 查询所有图片 -->
+<select id="listImg" resultType="img">
+	select * from img where manageid=#{hid}
+</select>
+ </mapper>
+   
+    
+    

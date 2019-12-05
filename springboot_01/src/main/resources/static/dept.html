@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			table tr td{
+				
+				text-align: center;
+				height: 30px;
+			}
+		</style>
+	</head>
+	<body>
+		<table id="table" border="1" width="600" style="margin: auto;">
+			<thead>
+				<tr ><td colspan="6">部门列表</td></tr>
+				<tr style="background: lightseagreen;">
+					<td>部门编号</td>
+					<td>部门名称</td>
+					<td >部门地址</td>
+				</tr>
+			</thead>
+			<tbody id="OneBody">
+			
+			</tbody>
+		</table>
+	</body>
+	<script src="js/jquery-1.12.4.js"></script>
+	<script>
+		$(function(){
+			queryList();
+		})
+		function queryList(){
+			$.getJSON("/api/depts",function(ret){
+				$.each(ret,function(i,data){
+					var dname = data.dname;
+					var ht="<tr>"+
+					"<td>"+data.did+"</td>"+
+					"<td><input type='button' onclick='query("+data.did+",this,\""+data.dname+"\")' value='"+dname+"' style='border:0px;color:blue;background-color:#fff;' /></td>"+
+					"<td>"+data.daddress+"</td>"+
+					"</tr>";
+					var tt="<tr style='display: none'><td colspan='3'>"+
+								"<table width='593'>"+
+									"<thead>"+
+										"<tr style=\"background: lightseagreen;\" >"+
+										"	<td>姓名</td>"+
+										"	<td>工作</td>"+
+										"	<td>工资</td>"+
+										"	<td>入职日期</td>"+
+										"	<td>奖金</td>"+
+										"	<td>操作</td>"+
+										"</tr>"+
+									"</thead>"+
+									"<tbody class='tbo'>"+
+									"</tbody>"+
+								"</table>"+
+							"</td></tr>";
+					$("#OneBody").append(ht);
+					$("#OneBody").append(tt);
+				})
+			})
+		}
+		function query(id,site,name){
+			if($(site).parent().parent().next().css("display")=="none"){
+				$(site).parent().parent().next().show();
+				$(site).parent().parent().next().find(".tbo").html("");
+				$.getJSON("/api/depts/emp/"+id+"",function(ret){
+					if(ret.length!=0){
+						$.each(ret,function(i,data){
+							var ht ="<tr><td>"+data.ename+"</td>"+
+							"	<td>"+data.work+"</td>"+
+							"	<td>"+data.money+"</td>"+
+							"	<td>"+data.time+"</td>"+
+							"	<td>"+data.jj+"</td>"+
+							"	<td><a href='javascript:void(0);' onclick='Delete("+id+","+data.eid+",this,\""+name+"\")'>删除</a></td></tr>";
+							$(site).parent().parent().next().find(".tbo").append(ht);
+						})
+					}
+					
+				})
+			}else{
+				$(site).parent().parent().next().hide();
+			}
+		}
+		function Delete(did,id,self,name){
+			alert(did);
+			if(confirm("确定要删除吗？")){
+				
+				 $.ajax({
+					url:"/api/depts/delemp/"+id+"/"+did,
+					dataType:"json",
+					type:"delete",
+					success:function(res){
+						if(res.code=="200"){
+							$(self).parent().parent().remove();
+							alert(name+"部门，还剩"+res.count+"位职员");							
+							if(res.count==0){
+								
+							}
+						}
+					}
+				}) 
+			}
+		}
+	</script>
+</html>

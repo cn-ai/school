@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.IDeptDao">
+	<resultMap type="dept" id="deptMap">
+		<id column="did" property="did"/>
+		<result column="dname" property="dname"/>
+		<result column="daddress" property="daddress"/>
+		<collection property="list" select="queryEmplist" column="did"></collection>
+	</resultMap>
+	<!-- 查询子表 -->
+		<select id="queryEmplist" resultType="emp">
+			select * from emp where did=#{0}
+		</select>
+	<!-- 查询主表 -->
+	<select id="queryDeptList" resultMap="deptMap">
+		select * from dept
+	</select>
+	
+	<select id="queryEmpList" resultType="emp">
+		select * from emp where did=#{did}
+	</select>
+	
+	<delete id="delEmp">
+		delete from emp where eid=#{eid}
+	</delete>
+</mapper>

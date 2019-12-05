@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+  <display-name>Vote</display-name>
+  <session-config>
+    <session-timeout>30</session-timeout>
+  </session-config>
+  <filter>
+    <display-name>CharacterEncodingFilter</display-name>
+    <filter-name>CharacterEncodingFilter</filter-name>
+    <filter-class>com.accp.Vote.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>CharacterEncodingFilter</filter-name>
+    <url-pattern>/c/*</url-pattern>
+  </filter-mapping>
+  <filter>
+    <display-name>SessionValidate</display-name>
+    <filter-name>SessionValidate</filter-name>
+    <filter-class>com.accp.Vote.filter.SessionValidate</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>SessionValidate</filter-name>
+    <url-pattern>*.jsp</url-pattern>
+    <url-pattern>*.html</url-pattern>
+  </filter-mapping>
+  <servlet>
+    <description></description>
+    <display-name>VoteAction</display-name>
+    <servlet-name>VoteAction</servlet-name>
+    <servlet-class>com.accp.Vote.action.VoteAction</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>VoteAction</servlet-name>
+    <url-pattern>/c/Action</url-pattern>
+  </servlet-mapping>
+   <listener>
+    <listener-class>com.accp.Vote.Listener.SubjectListener</listener-class>
+  </listener>
+</web-app>

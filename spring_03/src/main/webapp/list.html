@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+			<h5>当前操作：查找交易记录。请选择时间范围后点“查询”按钮</h5>
+			<h5>查询日期范围：<input type="date" name="beign"> 到 <input type="date" name="end"> <input type="button" value="查询" name="find"/></h5>
+			 <div id="Null" style="text-align: center;margin-top: 80px;display:none"><h2>此时间范围内没有交易记录</h2></div> 
+			<table style="text-align: center;" border="1" width="460">
+				<thead id="thead">
+					<tr>
+						<td>交易日期</td>
+						<td>支出</td>
+						<td>存入</td>
+						<td>账户余额</td>
+						<td>交易类型</td>
+						<td>备注</td>
+					</tr>
+				</thead>
+				<tbody id="content">
+					
+				</tbody>
+				<tfoot id="page">
+					<!-- <tr>
+						<td colspan="6"><a href="javascript:void(0)">首页</a> | <a href="javascript:void(0)">上一页</a> | <a href="javascript:void(0)">下一页</a> | <a href="javascript:void(0)">末页</a> 第<span id="PageNum"></span>/共<span id="All"></span>页(<span id="Count"></span>条记录) </td>
+					</tr> -->
+				</tfoot>
+			</table>
+	</body>
+	<script type="text/javascript" src="/spring_3/js/jquery-1.8.3.js"></script>
+	<script type="text/javascript">
+	$(function(){
+		show(1);
+	})
+	function show(currentPage,begin,end){
+		$.post("/spring_3/c/account",{"method":"queryDeal","currentPage":currentPage,"begin":begin,"end":end},function(json){
+			var list=json.list;
+			$("#content").empty();
+			$("#page").empty();
+			if(json.total!=0){
+				
+			 $.each(list,function(i,obj){
+				var tr="<tr><td>"+obj.transactionDate+"</td><td>"+obj.expense+"</td><td>"+obj.income+"</td><td>"+obj.balance+"</td><td>"+obj.transactionType+"</td><td>"+obj.remark+"</td></tr>";
+				$("#content").append(tr);
+			 }) 
+			
+			 $("tr:even").css("background-color","#ccc");
+			 var $page="<tr><td colspan='6'><a href='javascript:void(0)' onclick='show(1)'>首页</a> | <a href='javascript:void(0)' onclick='show("+json.prePage+")'>上一页</a> | <a href='javascript:void(0)' onclick='show("+json.nextPage+")'>下一页</a> | <a href='javascript:void(0)' onclick='show("+json.lastPage+")'>末页</a> 第<span id='PageNum'>"+currentPage+"</span>/共<span id='All'>"+json.pages+"</span>页(<span id='Count'>"+json.total+"</span>条记录) </td></tr>";
+				$("#page").append($page);
+			}else{
+				$("#thead").empty();
+				var div="<div id='Null' style='text-align: center;margin-top: 80px;display:block'><h2>此时间范围内没有交易记录</h2></div>";
+				$("#thead").append(div);
+				
+			}
+		},"json")
+	}
+	
+	$("[name=find]").click(function(){
+		var begin=$("[name=begin]").val();
+		var end=$("[name=end]").val();
+		show(1,begin,end);
+	})
+	</script>
+</html>

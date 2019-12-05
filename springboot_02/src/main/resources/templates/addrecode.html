@@ -1,0 +1,33 @@
+<!DOCTYPE html >
+
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>新增奖惩记录</title>
+	</head>
+	<body>
+		<form action="/c/users/addrecord" method="post">
+			<p>
+				<label>奖惩记录名:</label>
+				<input type="text" name="rname">*
+			</p>
+			<p>
+				<label>奖惩对象:</label>
+				<select name="stucode">
+				
+					<option th:each="temp,i:${list}" th:value="${temp.code}">[[${temp.stuname}]]</option>
+					
+				</select>
+			</p>
+			<p>
+				<label>描述:</label>
+				<textarea name="des"></textarea>
+			</p>
+			<p>
+				<input type="submit" value="保存"/>
+				<input type="button" value="取消"/>
+				
+			</p>
+		</form>
+	</body>
+</html>

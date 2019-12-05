@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" /> 
+	
+		<meta charset="UTF-8">
+		<title>退出系统</title>
+		 <!-- plugins:css -->
+		  <link rel="stylesheet" href="/jboa/vendors/iconfonts/mdi/css/materialdesignicons.min.css">
+		  <link rel="stylesheet" href="/jboa/vendors/css/vendor.bundle.base.css">
+		  <!-- endinject -->
+		  <!-- inject:css -->
+		  <link rel="stylesheet" href="/jboa/css/style.css">
+		  <!-- endinject -->
+		   <link rel="shortcut icon" href="/jboa/images/logo.jpg" />
+	</head>
+	<body>
+			 <div class="container-scroller">
+    <div class="container-fluid page-body-wrapper full-page-wrapper">
+      <div class="content-wrapper d-flex align-items-center text-center error-page bg-primary">
+        <div class="row flex-grow">
+          <div class="col-lg-7 mx-auto text-white">
+            <div class="row align-items-center d-flex flex-row">
+              <div class="col-lg-6 text-lg-right pr-lg-4">
+                <h1 class="display-1 mb-0">401</h1>
+              </div>
+              <div class="col-lg-6 error-page-divider text-lg-left pl-lg-4">
+                <h2>不好意思！</h2>
+                <h3 class="font-weight-light">请先登陆</h3>
+              </div>
+            </div>
+            <div class="row mt-5">
+              <div class="col-12 text-center mt-xl-2">
+              </div>
+            </div>
+            <div class="row mt-5">
+              <div class="col-12 mt-xl-2">
+                <p class="text-white font-weight-medium text-center">Copyright &copy; 2018  All rights reserved.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- content-wrapper ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+  <!-- plugins:js -->
+  <script src="/jboa/vendors/js/vendor.bundle.base.js"></script>
+  <script src="/jboa/vendors/js/vendor.bundle.addons.js"></script>
+  <!-- endinject -->
+  <!-- inject:js -->
+  <script src="/jboa/js/off-canvas.js"></script>
+  <script src="/jboa/js/misc.js"></script>
+  <!-- endinject -->
+	</body>
+	<script src="/jboa/js/jquery-1.8.3.js"></script>
+	<script type="text/javascript">
+	$(function(){
+		if(window.sessionStorage.getItem("uid")==null){
+			$("h3").html("请先进行登录!");
+			setTimeout(function(){
+				window.location = "login.jsp";
+			},2000);
+		}else{
+			window.sessionStorage.removeItem("uid");
+			window.sessionStorage.removeItem("uname");
+			$.post("/jboa/Action/user/outUser",function(){});
+			$("h1").html("💗");
+			$("h2").html("感谢您的使用");
+			$("h3").html("期待您下次的使用~");
+			setTimeout(function(){
+				window.location = "login.jsp";
+			},2000);
+		}
+		
+	})
+		
+	</script>
+</html>

@@ -1,0 +1,9 @@
+package com.example.demo.ws;
+
+import javax.websocket.server.ServerEndpoint;
+
+//配置站点
+@ServerEndpoint
+public class MyWebSocketHandler {
+
+}

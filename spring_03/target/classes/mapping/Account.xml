@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.accp.dao.IAccountDao">
+	<sql id="query">select * from</sql>
+	<!-- 登录 -->
+	<select id="Login" resultType="account">
+		<include refid="query" />
+		account
+		<where>
+			<if test="cardno!=null">
+				and cardno = #{cardno}
+			</if>
+		</where>
+	</select>
+	<!--新增两个表的数据 -->
+	<insert id="addRecord">
+		insert into transaction_record
+		(cardno,transaction_date,expense,balance,transaction_type)
+		values
+		(#{rdcord.cardno},#{rdcord.transaction_Date},#{rdcord.expense},#{rdcord.balance},#{rdcord.transaction_Type})
+	</insert>
+	<insert id="addRecord2">
+		insert into transaction_record
+		(cardno,transaction_date,income,balance,transaction_type)
+		values
+		(#{rdcord2.cardno},#{rdcord2.transaction_Date},#{rdcord2.income},#{rdcord2.balance},#{rdcord2.transaction_Type})
+	</insert>
+	<!-- 修改用户表的金额 -->
+	<update id="updateAccount">
+		update Account 
+		<set>
+			<if test="account.balance!=null">
+				balance=#{account.balance}
+			</if>
+		</set>
+		<where>
+			<if test="account.cardno!=null">
+				cardno=#{account.cardno}
+			</if>
+		</where>
+	</update>
+	
+	<!-- 查询交易记录 -->
+	<select id="queryDeal" resultType="transaction_record">
+		<include refid="query"/>
+		Transaction_record
+		<where>
+			<if test="datebegin!=null">
+				transaction_Date&gt;=#{datebegin} 
+			</if>
+			<if test="dateend!=null">
+				and transaction_Date&lt;=#{dateend} 
+			</if>
+		</where>
+	</select>
+	<!-- 修改密码 -->
+	<update id="updatePwd">
+	update account
+	<set>
+		<if test="pwd!=null">
+			password=#{pwd}
+		</if>
+	</set>
+	<where>
+		<if test="cardno!=null">
+			cardno=#{cardno}
+		</if>
+	</where>
+	</update>
+</mapper>

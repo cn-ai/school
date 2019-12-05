@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.accp.airinInfo.dao.IAirinInfoDao">
+	<!-- 定义命名sql -->
+	<sql id="query">
+		SELECT id,flight_number,destination,flight_date from
+	</sql>
+
+
+	<select id="queryAll" resultType="airininfo">
+		<include refid="query" />
+		tb_airinfo
+	</select>
+
+	<select id="queryByTerm" resultType="airininfo">
+		<include refid="query" />
+		tb_airinfo
+		<where>
+			<if test="time!=null">
+				flight_date=#{time}
+			</if>
+			<if test="destination!=null">
+				and destination=#{destination}
+			</if>
+		</where>
+	</select>
+
+	<delete id="daleteAirinInfo">
+		delete from tb_airinfo where id=#{id}
+	</delete>
+
+	<update id="updateAirinInfo">
+		update tb_airinfo
+		<set>
+			<if test="info.flight_number!=null">
+				flight_number=#{info.flight_number},
+			</if>
+			<if test="info.destination!=null">
+				destination=#{info.destination},
+			</if>
+			<if test="info.flight_date!=null">
+				flight_date=#{info.flight_date,	jdbcType=DATE}
+			</if>
+		</set>
+		where id=#{info.id}
+	</update>
+</mapper>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy 2 elements to &apos;jpa_Springboot/src/main/java/com.accp.cfg&apos;&#x0D;&#x0A;- Original project: &apos;springboot_jpa&apos;&#x0D;&#x0A;- Destination element: &apos;jpa_Springboot/src/main/java/com.accp.cfg&apos;&#x0D;&#x0A;- Original elements:&#x0D;&#x0A;     com.accp.cfg.WebConfig.java&#x0D;&#x0A;     com.accp.cfg.BeansConfig.java" description="Copy compilation units" destination="=jpa_Springboot/src\/main\/java&lt;com.accp.cfg" element1="/src\/main\/java&lt;com.accp.cfg{WebConfig.java" element2="/src\/main\/java&lt;com.accp.cfg{BeansConfig.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1554703308519" units="2" version="1.0"/>
+</session>

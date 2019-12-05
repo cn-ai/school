@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.accp.ssm_02.dao.IPaperDao">
+	<select id="Login" resultType="T_user">
+		SELECT * FROM T_USER WHERE usercode=#{userName} AND userPassword=#{userPassword}
+	</select>
+	<select id="querylistcode" resultType="T_code">
+		select cid,codeTypeName from T_code
+	</select>
+	
+	<resultMap type="com.accp.ssm_02.vo.PaperVo" id="papermap">
+		<id column="pid" property="pid"/>
+		<result column="title" property="title"/>
+		<result column="type" property="type"/>
+		<result column="createdBy" property="createdBy"/>
+		<result column="creationDate" property="creationDate"/>
+		<result column="modifyDate" property="modifyDate"/>	
+		<result column="cid" property="cid"/>	
+		<result column="codeTypeName" property="codeTypeName"/>			
+	</resultMap>
+	
+	<select id="querypaper" resultMap="papermap">
+		SELECT p.pid,p.title,p.`type`,p.`createdBy`,p.`creationDate`,p.`modifyDate`, c.cid,c.`codeTypeName` 
+		FROM T_paper p INNER JOIN T_code c ON p.type=c.cid
+		<where>
+			<if test="pvo.title!=null and pvo.type!=''">
+				and p.title LIKE '%${pvo.title}%'
+			</if>
+			<if test="pvo.codeTypeName!=null and pvo.codeTypeName!=''">
+				 AND c.`codeTypeName` =#{pvo.codeTypeName}
+			</if>
+		</where>
+	</select>
+	<delete id="delpaper">
+		delete from t_paper where pid=#{pid}
+	</delete>
+	<select id="querytitle" resultType="T_paper">
+		select * from T_paper 
+		<where>
+			<if test="title!=null and title!=''">
+				title=#{title}
+			</if>
+			<if test="pid!=-1">
+				pid=#{pid}
+			</if>
+		</where>
+	</select>
+	<insert id="addPaper">
+		INSERT INTO t_paper (title,`type`,papersummary,paperpath,createdBy,creationDate)
+		VALUE(#{paper.title},#{paper.type},#{paper.paperSummary},#{paper.paperPath},#{paper.createdBy},NOW());
+	</insert>
+	<update id="updatePaper">
+		UPDATE t_paper SET title=#{paper.title},`type`=#{paper.type},paperSummary=#{paper.paperSummary},paperPath=#{paper.paperPath},modifyDate=now() WHERE pid=#{paper.pid}
+		
+	</update>
+</mapper>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+    <mapper namespace="com.example.demo.dao.ILoginDao">
+    	<select id="Login" resultType="users">
+    		select * from users 
+    		<where>  
+    			<if test="uemail!=null">			
+    				uemail=#{uemail}   
+    			</if> 	
+    			<if test="upwd!=null">	   			
+    				and upwd=#{upwd} 
+    			</if>	 		
+    		</where>
+    	</select>
+    	<insert id="reg">
+    		INSERT INTO users (uname,uEmail,upwd) 
+    		VALUES(#{user.uname},#{user.uemail},#{user.upwd})
+    	</insert>
+    	<select id="testEmail"  resultType="users">
+    		select * from users where uemail=#{uemail} 
+    	</select>
+    </mapper>

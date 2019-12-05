@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+    <mapper namespace="com.accp.Test">
+    	<select id="queryAll" resultType="com.accp.entity.Message">
+    			select * from message_test
+    	</select>
+    	
+    	<insert id="save" parameterType="com.accp.entity.Message">
+    		insert into message_test(username,title,contents,createTime)
+    		 values(#{userName},#{title},#{contents},#{createTime});
+    	</insert>
+    </mapper>

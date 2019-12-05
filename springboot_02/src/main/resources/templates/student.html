@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+		<title>学生列表</title>
+	</head>
+	<body>
+		<h1 style="margin-left:200px">学生信息</h1>
+		<table border="1" width="700">
+		<thead>
+			<tr style="background-color: #EFEFEF">
+				<th>学号</th>
+				<th>姓名</th>
+				<th>职务</th>
+				<th>专业</th>
+				<th>班级</th>
+				<th>性别</th>
+				<th>生日</th>
+				<th>电话</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		
+		<tbody th:remove="${pageInfo.list.size()==0?'none':'all-but-first'}" >
+			
+			<tr th:style="${i.odd?'background-color:#ccc;':'background-color:#fff;'}" th:each="temp,i:${pageInfo.list}">
+				<td th:text="${temp.code}"></td>
+				<td th:text="${temp.stuname}">静态系统消息1</td>
+				<td th:switch="${temp.job}">
+					<span th:case="1">普通学生</span>
+					<span th:case="2">组长</span>
+					<span th:case="3">班主</span>
+				</td>
+				<td th:switch="${temp.major}">
+					<span th:case="1">计算机</span>
+					<span th:case="2">电气</span>
+					<span th:case="3">金融</span>
+				</td>
+				<td th:text="${temp.grade}">java21</td>
+				<td th:switch="${temp.sex}">
+					<span th:case="1">男</span>
+					<span th:case="2">女</span>
+					<span th:case="*">其他</span>
+				</td>			
+				<td th:text="${#dates.format(temp.birthday,'yyyy-MM-dd')}">生日</td>
+				<td th:text="${temp.tel}">电话</td>
+			
+				<td><a href="javascript:void(0)" th:onclick="lookrecord([[${temp.code}]],[[${temp.stuname}]])">查看</a></td>
+			</tr>
+			<tr>
+				<td colspan="9">查无此数据</td>		
+			</tr>
+			
+		</tbody>
+		<tfoot>
+		<tr>
+			 <td colspan="9">
+			当前是第<span>[[${pageInfo.pageNum}]]</span>页   共<span>[[${pageInfo.pages}]]</span>页
+			
+			<a th:if="${pageInfo.hasPreviousPage}" th:href="|/c/users/querystudent?pageNum=${pageInfo.prePage}|">上一页</a>
+			<a  th:if="${pageInfo.hasNextPage}" th:href="|/c/users/querystudent?pageNum=${pageInfo.nextPage}|">下一页</a>
+			</td> 
+		</tr>
+		</tfoot>
+	</table>
+	
+	<br>
+	
+	<table border="1" width="500" style="display: none" id="table2"> 
+		<thead>
+			<tr style="background-color: #EFEFEF">
+				<th>序号</th>
+				<th>奖惩</th>
+				<th>学生姓名</th>
+				<th>创建人</th>
+				<th>描述</th>
+				
+			</tr>
+		</thead>
+		
+		<tbody id="content">
+			
+			
+			
+		</tbody>
+		
+	</table>
+	</body>
+	<script type="text/javascript" src="/js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" th:inline="javascript">
+		
+		function lookrecord(code,stuname){
+			$("#table2").show();
+			$.getJSON("/c/users/loadrecord/"+code,function(result){
+				$("#content").empty();
+				
+				if(result.pages==0){
+					var tr="<tr><td colspan='9'>暂无数据</td></tr>";
+					$("#content").append(tr);
+				}
+				$.each(result.list,function(i,obj){
+					
+					var tr="<tr><td>"+i+"</td><td>"+obj.rname+"</td><td>"+stuname+"</td><td>"+obj.createBy+"</td><td>"+obj.des+"</td></tr>";
+					$("#content").append(tr);
+				})
+				
+			})
+			
+		}
+	</script>
+</html>

@@ -1,0 +1,70 @@
+package com.accp.jboa.action;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.accp.jboa.biz.RemburseBiz;
+import com.accp.jboa.pojo.Reimburse_detail;
+import com.accp.jboa.pojo.Tb_reimburse;
+import com.accp.jboa.util.Base64ConvertImageUtil;
+import com.accp.jboa.vo.Base64ImageVo;
+
+@Controller
+@RequestMapping("/remburse")
+public class RemburseAction {
+	@Autowired
+	private RemburseBiz rebiz;
+	
+	/**
+	 * 新增报销表
+	 * @param remburse 主表对象
+	 * @param year 年
+	 * @param month 月
+	 * @param departmentid 部门
+	 * @param employeeid	员工
+	 */
+	//@RequestBody:请求方法必须是json格式
+		@RequestMapping(value = "addRemburse", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, String> addRemburse(@RequestBody Base64ImageVo vo,HttpSession session) {
+			Map<String, String> message = new HashMap<String, String>();
+			int id=rebiz.queryRemburse();
+			vo.getRe().setReimburseid(id+1);
+			// 获得远程路径
+			String realPath = session.getServletContext().getRealPath("/images");
+				
+			List<Reimburse_detail> d=vo.getRe().getDetails();
+			for (Reimburse_detail reimburse_detail : d) {
+				// uuid另存为文件名
+				String newFileName = UUID.randomUUID().toString().replace("-", "")
+						+ vo.getName().substring(vo.getName().lastIndexOf("."));
+
+				reimburse_detail.setPictruename(vo.getName());
+				reimburse_detail.setPictruepath(realPath);
+				//base64反序列化
+				Base64ConvertImageUtil.generateImageFromBase64(vo.getData(), realPath+File.separator+newFileName);
+			}
+			rebiz.addRemburse(vo.getRe(),2012, 4);
+			
+		
+			message.put("code", "200");
+			message.put("msg", "ok");
+			return message;
+		}
+
+}

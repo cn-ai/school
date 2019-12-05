@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="com.example.demo.dao.IMessageDao">
+   <!-- 登录 -->
+    	<select id="dl" resultType="login">
+    			SELECT * FROM Login
+    	</select>
+     <!-- 显示消息 -->
+     	<select id="queryMessage" resultType="message_ws">
+     		select * from message_ws
+     	</select> 	
+     <!-- 添加消息 -->
+     	<insert id="saveMessage">
+     		insert into message_ws(title,uid,createDate) value(#{message.title},#{message.uid},#{message.createDate})
+     	</insert>
+    </mapper>
+  
+    

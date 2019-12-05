@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy package &apos;com.accp.t2.test&apos; to &apos;springmvc_ajax02/src/test/java&apos;&#x0D;&#x0A;- Original project: &apos;springmvc_2&apos;&#x0D;&#x0A;- Destination element: &apos;springmvc_ajax02/src/test/java&apos;&#x0D;&#x0A;- Original element: &apos;springmvc_2/src/test/java/com.accp.t2.test&apos;" description="Copy package" destination="=springmvc_ajax02/src\/test\/java" element1="/src\/test\/java&lt;com.accp.t2.test" flags="589830" fragments="1" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyPackages" stamp="1543714828369" version="1.0"/>
+</session>

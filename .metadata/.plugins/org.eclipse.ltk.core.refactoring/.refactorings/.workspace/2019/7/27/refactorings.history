@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Delete resource &apos;a4pay-api&apos;" deleteContents="false" description="Delete resource &apos;a4pay-api&apos;" element1="/a4pay-api" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1562218030217"/>
+</session>

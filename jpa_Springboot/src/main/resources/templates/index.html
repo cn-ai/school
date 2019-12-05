@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>空气质量监测信息库</title>
+</head>
+<body>
+	<h2>空气质量监测信息库</h2>
+	<p>
+		按区域查询
+		<select name="name">
+			<option th:each="temp,i:${dlist}" th:value="${temp.name}">[[${temp.name}]]</option>
+		</select>
+		<input type="button" value="查找" name="query">
+		<a href="/query">添加空气质量信息</a>
+	</p>
+	<table border="1">
+		<tr>
+			<td>序号</td>
+			<td>区域</td>
+			<td>监测时间</td>
+			<td>PM10数据</td>
+			<td>PM2.5数据</td>
+			<td>监测站</td>
+		</tr>
+		<tr th:each="temp,i:${page}" th:if="${pages!=0}">
+			<td th:text="${i.count}">序号</td>
+			<td th:text=${temp.name}>区域</td>
+			<td th:text=${temp.monitortime}>监测时间</td>
+			<td th:text="${temp.pm10}">PM10数据</td>
+			<td th:text="${temp.pm25}">PM2.5数据</td>
+			<td th:text=${temp.monitoringstation}>监测站</td>
+		</tr>
+		<tr th:if="${pages==0}">
+			<td colspan="6">暂无数据</td>
+		</tr>
+	</table>
+	<p>
+		<a th:href="|/queryDistrict?index=0|"> 首页</a>
+		<span th:switch="${pageNum}">
+		<a th:case="0" th:href="|/queryDistrict?index=0|"> 上一页</a>
+		<a th:case="*" th:href="|/queryDistrict?index=${pageNum-1}|"> 上一页</a>
+		</span>
+		<span th:switch="${pageNum}">
+		<a th:case="${pages}" th:href="|/queryDistrict?index=${pages}|"> 下一页</a>
+		<a th:case="*" th:href="|/queryDistrict?index=${pageNum+1}|"> 下一页</a>
+		</span>
+		<a th:href="|/queryDistrict?index=${pages}|"> 尾页</a>
+		<a > 第[[${pageNum+1}]]页/共[[${pages}]]页(共[[${number}]]条)</a>
+	</p>
+</body>
+<script type="text/javascript" src="/js/jquery-1.12.4.js"></script>
+<script type="text/javascript">
+	$("[name=query]").click(function(){
+		var name=$("[name=name]").val();
+		location.href="/queryDistrict?name="+name;
+	})
+</script>
+</html>

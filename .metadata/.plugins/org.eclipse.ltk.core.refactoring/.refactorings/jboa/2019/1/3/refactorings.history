@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;Base64ImageVo.java&apos; to &apos;email_section/src/main/java/com.example.demo.vo&apos;&#x0D;&#x0A;- Original project: &apos;jboa&apos;&#x0D;&#x0A;- Destination element: &apos;email_section/src/main/java/com.example.demo.vo&apos;&#x0D;&#x0A;- Original element: &apos;com.accp.jboa.vo.Base64ImageVo.java&apos;" description="Copy compilation unit" destination="=email_section/src\/main\/java&lt;com.example.demo.vo" element1="/src\/main\/java&lt;com.accp.jboa.vo{Base64ImageVo.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1547732324630" units="1" version="1.0"/>
+</session>

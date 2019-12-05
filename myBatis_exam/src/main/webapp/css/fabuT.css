@@ -1,0 +1,9 @@
+@charset "UTF-8";
+
+.tabContainer{ width:970px; height:42px;  text-align:center;margin-left:150px;}
+.tabContainer ul.tabHead{font-size:14px; font-weight:700; color:#555;}
+.tabContainer ul.tabHead em{ }
+.tabContainer li{list-style:none; float:left; width:130px; height:40px; line-height:40px; border:1px solid #e4e4e4; border-left:none; cursor:pointer;}
+.tabContainer li.currentBtn{ border-top:2px solid #e61952; border-bottom:1px solid #fff; height:39px; }
+.tabContainer li.currentBtn a{color:#e61952;text-decoration: none;}
+.lsdp a{color:blue;text-decoration: none;}

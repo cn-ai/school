@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace:必须为接口的完整限定名 -->
+
+
+<mapper namespace="com.accp.exam.dao.IInvitationDao">
+	<select id="queryAll" resultType="Invitation">
+		SELECT * from invitation 
+		<where>
+			<if test="title!=null">
+				and title like '%${title}%'
+			</if>
+		</where>
+	</select>
+	<select id="">
+		select * from detail 
+		<where>
+			<if test="invid!=null">
+				and invid=#{iid}
+			</if>
+		</where>
+	</select>
+</mapper>

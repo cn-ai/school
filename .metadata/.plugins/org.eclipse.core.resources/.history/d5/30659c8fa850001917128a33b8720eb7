@@ -1,0 +1,58 @@
+package com.accp.cfg;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+
+import com.accp.biz.WebMessageBiz;
+import com.accp.pojo.WebMessage;
+import com.accp.utils.RedisBaseOps;
+import com.alibaba.fastjson.JSON;
+
+@Configuration
+@EnableScheduling
+public class TaskConfig {
+
+	@Autowired
+	private WebMessageBiz biz;
+
+	@Autowired
+	private RedisBaseOps redisUtils;
+	
+	@Autowired
+	private RedisTemplate<String, Object> rt;
+
+	@Autowired
+	private WebMessageBiz wBiz;
+	
+	@Autowired
+	private RedisBaseOps rbo;
+	// 实现【定时从mysql中查询所有消息信息，然后循环插入redis（Hashes）中，完成读写分离同步】
+	@Scheduled(cron = "0 0 0 * * ?")
+	public void doSynRedis() {
+		System.out.println("实现调度");
+		/*WebMessage webMessage=new WebMessage(); 
+		rt.opsForSet().getOperations().delete("set:message");
+		List<Object> iter=	rbo.lGet("new:message", 0, -1);
+		List<WebMessage> list=new ArrayList<WebMessage>();
+		for (Object msg : iter) {
+			list.add(JSON.parseObject(msg.toString(),webMessage.getClass()));
+		}*/
+		rt.opsForSet().getOperations().delete("set:message");
+		List<WebMessage>  webMessages=wBiz.findMessageList();
+		for (WebMessage msg : webMessages) {
+			if(msg!=null) {
+				int id = rt.opsForValue().increment("incr:message").intValue();
+				msg.setMid(id);
+				rt.opsForSet().add("set:message", msg);
+			}
+		}
+		
+	}
+
+}

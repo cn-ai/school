@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item value="false" key="isRegEx"/>
+		<item value="修改" key="selection"/>
+		<item value="true" key="casesensitive"/>
+		<item value="true" key="incremental"/>
+		<item value="true" key="wrap"/>
+		<item value="false" key="wholeword"/>
+		<list key="findhistory">
+			<item value="修改"/>
+			<item value="savePost"/>
+			<item value="PostVoMap"/>
+			<item value="queryPostList"/>
+			<item value="th:style"/>
+			<item value="评论"/>
+			<item value="forum"/>
+			<item value="my"/>
+			<item value="save"/>
+			<item value="business_detail_title"/>
+			<item value="toAddForum"/>
+			<item value="c"/>
+			<item value="cur"/>
+			<item value="close_pop"/>
+			<item value="pop_con"/>
+		</list>
+		<list key="replacehistory">
+			<item value=""/>
+			<item value="#"/>
+			<item value="javaScript:void(0)"/>
+			<item value="cn_message"/>
+			<item value="leave"/>
+			<item value="createMan"/>
+			<item value="pointer"/>
+			<item value="/jboa/remburse/querylist"/>
+			<item value="utf-8"/>
+		</list>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item value="272" key="DIALOG_WIDTH"/>
+		<item value="1|微软雅黑|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|微软雅黑" key="DIALOG_FONT_NAME"/>
+		<item value="532" key="DIALOG_HEIGHT"/>
+		<item value="9" key="DIALOG_X_ORIGIN"/>
+		<item value="23" key="DIALOG_Y_ORIGIN"/>
+	</section>
+</section>

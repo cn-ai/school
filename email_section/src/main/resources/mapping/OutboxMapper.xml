@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+    <mapper namespace="com.example.demo.dao.IOutBoxDao">
+    <!-- 
+	 * 查询收件箱
+	 * 按照状态查询
+	 * 查询当前用户
+	 * 排除删除的状态
+	 *  默认状态升序  0未读/1已读/2红旗
+	 *  默认时间降序
+	 * @return
+	 字段：Manner title state inName time
+	 WHERE state=? AND inUid=? 
+	SELECT * FROM outbox  ORDER BY `time` 
+	 * -->
+	 <select id="queryOutbix" resultType="outbox">
+	 	select Manner, title, state, inName, time from outbox 
+	 	<where>
+	 		<if test="state!=-1 and state!=3 and state!=4">
+	 			 state=#{state}
+	 		</if>
+	 		and inuid=#{inuid}
+	 	</where>
+	 </select>
+    </mapper>

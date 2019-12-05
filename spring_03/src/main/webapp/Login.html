@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<style>
+			div{
+				margin-top: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<div>
+			<h1 style="display: inline;">个人网上银行</h1>
+				<div>卡号：<input type="text" placeholder="请输入卡号" id="user"></div>
+				<div>密码：<input type="text" placeholder="请输入密码" id="pwd"></div>
+				<div><input type="button" value="登陆网上银行" onclick="Login()"></div>
+		</div>
+	</body>
+	<script type="text/javascript" src="js/jquery-1.8.3.js"></script>
+	<script type="text/javascript">
+		function Login(){
+			if($("#user").val().length<16){
+				alert("请正确填写您的16位卡号");
+			}else if($("#pwd").val().length<6){
+				alert("请正确填写您的6位密码");
+			}else{
+				$.post("/spring_3/c/account",{"method":"Login","account":$("#user").val(),"password":$("#pwd").val()},function(json){
+					
+					if(json.code=="200"){
+						alert(json.msg);
+						location.href="/spring_3/main.html";
+					}else if(json.code=="500"){
+						alert(json.msg);
+					}
+				},"json");
+			}
+		}
+	</script>
+</html>

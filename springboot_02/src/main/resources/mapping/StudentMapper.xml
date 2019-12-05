@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.IStudentDao">
+<!-- 登录 -->
+	<select id="Login" resultType="t_student">
+		select * from T_student where stuname=#{name} and code=#{code}
+	</select>
+<!-- 查询所有学生 -->	
+	<select id="queryStudent" resultType="t_student">
+		select * from T_student
+	</select>
+<!--  查询某个学生的奖惩记录 -->
+	<resultMap type="t_record" id="recordMap">
+		<id column="rid" property="rid"/>
+		<result column="rname" property="rname"/>
+		<result column="createBy" property="createBy"/>
+		<result column="des" property="des"/>
+		<association property="student" column="stucode" select="querystudent"></association>
+	</resultMap>
+	<!-- 主表 -->
+	<select id="querystudent" resultType="t_student">
+		select * from t_student where code=#{0}
+	</select>
+	<select id="loadRecord" resultMap="recordMap">		
+		SELECT * FROM t_student s inner JOIN t_record r ON s.code =r.stucode
+		<where>
+			
+			<if test="stucode!='' and stucode!=null">
+				 r.stucode=#{stucode}
+			</if>
+			<if test="stuname!=null and stuname!=''">
+				and s.stuname like '%${stuname}%'
+			</if>
+			<if test="rname!=null and rname!=''">
+				and r.rname like '%${rname}%'
+			</if>
+		</where>
+		
+	</select>
+
+<!--  新增某个学生的奖惩记录 -->
+	<insert id="addRecord">
+		INSERT INTO t_record(`rname`,stucode,createDate,createBy,des) VALUE(#{record.rname},#{record.stucode},NOW(),#{record.createBy},#{record.des})
+	</insert>
+<!-- 修改某个学生的奖惩记录  -->
+	<update id="updateRecord">
+		UPDATE t_record SET `rname`=#{record.rname},stucode=#{record.stucode},createDate=NOW(),createBy=#{record.createBy},des=#{record.des} WHERE rid=#{record.rid}
+	</update>
+<!-- 删除某个学生的奖惩记录 -->
+	<delete id="delRecord">
+		delete from t_record where rid=#{rid}
+	</delete>
+	
+<select id="recordOne" resultType="t_record">
+	select * from t_record where rid=#{rid}
+</select>
+</mapper>

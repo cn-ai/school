@@ -1,0 +1,67 @@
+
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+   <meta charset="utf-8">
+	
+	<script type="text/javascript" src="/js/jquery-1.12.4.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$(".leftDiv ul li").click(function(){
+				var url = $(this).attr("url");
+				$(".rightDiv iframe").attr("src",url);
+			});
+		});
+	</script>
+	<style>
+		.titleDiv{
+			height:200px;
+			border:1px solid blue;
+		}
+		.contentDiv{
+			height:700px;
+			border:1px solid red;
+			display:flex;
+		}
+		.contentDiv div{
+			border:1px solid yellow;
+			
+		}
+		.leftDiv{
+			flex-grow: 1;
+		}
+		.rightDiv{
+			flex-grow: 4;
+		}
+		.rightDiv iframe{
+			width:100%;
+			height:100%;
+			border:0px;
+		}
+	</style>
+  </head>
+  
+  <body>
+    <div class="topDiv">
+    	<div class="titleDiv">学生奖惩管理系统|欢迎你<h3 style="color: red;">[[${session.stu.stuname}]]</h3><a href="/view/login">注销</a></div>
+    	<div class="contentDiv">
+    		<div class="leftDiv">
+    			<ul>
+    				<li url="/c/users/querystudent">学生列表</li>
+    				<li url="/c/users/queryrecord">奖惩管理</li>
+    				<li url="javascript(0)" onclick="exit();">退出管理</li>
+    			</ul>
+    		</div>
+    		<div class="rightDiv">
+    			<iframe src="/view/home"></iframe>
+    		</div>
+    	</div>
+    </div>
+  </body>
+  <script type="text/javascript" src="/js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" th:inline="javascript">
+		function exit(){
+			window.top.location="/view/login";
+		}
+	</script>
+</html>

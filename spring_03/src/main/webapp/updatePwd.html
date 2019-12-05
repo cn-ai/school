@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			 ul li{
+			 	margin-top: 10px;
+			 }
+		</style>
+	</head>
+	<body>
+		<div style="margin-top: 30px;margin-left: 50px;">
+			<h5>当前操作：修改密码。请按要求填写完后点“修改”按钮</h5>
+			<ul style="list-style-type: none;">
+				<li>请输入现在的密码：<input type="text" placeholder="请输入转入账户" name="oldpwd"></li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				请输入新密码：<input type="text" placeholder="请输入转入金额" name="newpwd"></li>
+				<li>请再次输入新密码：<input type="text" placeholder="请输入转入账户" name="againpwd"></li>
+				<li><input type="button" value="修改" style="margin-left: 100px;" name="xg"></li>
+			</ul>
+		</div>
+	</body>
+	<script type="text/javascript" src="/spring_3/js/jquery-1.8.3.js"></script>
+	<script type="text/javascript">
+	$("[name=xg]").click(function(){
+		var cardno=window.sessionStorage.getItem("cardno");
+		var oldpwd=$("[name=oldpwd]").val();
+		var newpwd=$("[name=newpwd]").val();
+		alert(newpwd);
+		var againpwd=$("[name=againpwd]").val();
+		alert(againpwd);
+		$.post("/spring_3/c/account",{"method":"getAccountSession"},function(json){
+			if(json.password!=oldpwd){
+				alert("旧密码输入错误");
+				return;
+			}
+			if(newpwd.leght<6&&isNaN(newpwd)==true){
+				alert("密码只能是6位数字");
+				return;
+			}
+			if(newpwd!=againpwd){
+				alert("两次密码不一致");
+				return;
+			}
+			$.post("/spring_3/c/account",{"method":"updatePwd","cardno":cardno,"pwd":newpwd},function(txt){
+				alert("修改成功");
+			})
+		},"json");
+	})
+	</script>
+</html>

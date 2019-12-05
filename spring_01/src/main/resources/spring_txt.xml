@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="emp1" class="com.accp.spring01.pojo.Employee">
+		<property name="name" value="张三"></property>
+		<property name="sex" value="男"></property>
+		<property name="birthdayDate" >
+			<bean class="java.util.Date">
+				<property name="year" value="87"></property>
+				<property name="month" value="7"></property>
+				<property name="date" value="8"></property>
+			</bean>	
+		</property>
+		<property name="loves">
+			<list>
+				<value>文艺</value>
+				<value>滑冰</value>
+				<value>网聊</value>
+				<value>游戏</value>
+			</list>
+		</property>
+		
+	</bean>
+	
+	
+	<bean  class="com.accp.spring01.whyioc.Printer" id="printer">
+		<property name="emp" ref="emp1"></property>
+	</bean>
+
+</beans>

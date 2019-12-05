@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+		<title>奖惩管理</title>
+	</head>
+	<body>
+		<h1>奖惩管理</h1>
+		<form action="/c/users/queryrecord" method="get">
+			<p>
+				<label>奖惩:</label><input type="text" name="rname">
+				<label>学生姓名:</label><input type="text" name="stuname">
+				<input type="submit" value="查询"/>
+				<input type="button" onclick="toAdd()" value="添加"/>
+			</p>
+		</form>
+		<table border="1" width="600" >
+		<thead>
+			<tr style="background-color: #EFEFEF">
+				<th>序号</th>
+				<th>奖惩</th>
+				<th>学生姓名</th>
+				<th>创建人</th>
+				<th>创建时间</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		
+		<tbody th:remove="${pageinfo.list.size()==0?'none':'all-but-first'}">
+			
+			<tr th:style="${i.odd?'background-color:#ccc;':'background-color:#fff;'}" th:each="temp,i:${pageinfo.list}">
+				<td th:text="${i.count}">1</td>
+				<td th:text="${temp.rname}">迟到1次</td>
+				<td th:text="${temp.student.stuname}">admin</td>
+				<td th:text="${temp.createBy}">admin</td>
+				
+				<td th:text="${#dates.format(temp.createDate,'yyyy-MM-dd')}">2012-04-05</td>
+				<td>
+					<a th:href="@{/c/users/recordOne(rid=${temp.rid})}">修改</a>
+					<a th:href="@{/c/users/delrecord(rid=${temp.rid})}">删除</a>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="5">暂无数据</td>
+				
+			</tr>
+			
+			
+		</tbody>
+		<tfoot>
+		<tr>
+			 <td colspan="9">
+			当前是第<span>[[${pageinfo.pageNum}]]</span>页   共<span>[[${pageinfo.pages}]]</span>页
+			
+			<a th:if="${pageinfo.hasPreviousPage}" th:href="|/c/users/queryrecord?pageNum=${pageinfo.prePage}|">上一页</a>
+			<a  th:if="${pageinfo.hasNextPage}" th:href="|/c/users/queryrecord?pageNum=${pageinfo.nextPage}|">下一页</a>
+			</td> 
+		</tr>
+		</tfoot>
+	</table>
+	</body>
+	<script type="text/javascript" src="/js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" th:inline="javascript">
+		function toAdd(){
+			location.href="/c/users/addrecode";
+		}
+	</script>
+</html>

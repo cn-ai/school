@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace:必须为接口的完整限定名 -->
+<mapper namespace="com.accp.mybatis_house.dao.IUserDao">
+<sql id="query">
+	select * from
+</sql>
+<!-- 登录 -->
+	<select id="Login" resultType="user">
+	<include refid="query"/>
+		 user 
+		 <where>
+		 <if test="uname!=null">
+		    and utel=#{uname}
+		 </if>
+		 <if test="upwd!=null">
+		   and upwd=#{upwd}
+		 </if>
+		 </where>
+	</select>
+	<!--注册  -->
+	<insert id="zc">
+		insert into user (uaccount,upwd,utel,uname,addtime) value(#{user.uaccount},#{user.upwd},#{user.utel},#{user.uname},#{user.addtime});
+	</insert>
+	<!--查询地区  -->
+	<select id="querydistrict" resultType="district">
+		<include refid="query"/> district
+	</select>
+	<!--查询房型  -->
+	<select id="querytype" resultType="type">
+		<include refid="query"/> type
+	</select>
+	<!-- 查询面积 -->
+	<select id="queryarea" resultType="area">
+		<include refid="query"/> area
+	</select>
+
+</mapper>

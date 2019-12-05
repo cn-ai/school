@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.accp.springmvc_exam.dao.IQualityDao">
+	<resultMap type="air_quality_index" id="queryAllmap">
+		<id column="id" property="id"/>
+		<result column="district_id" property="district_id"/>
+		<result column="monitor_time" property="monitor_time"/>
+		<result column="pm10" property="pm10"/>
+		<result column="pm2" property="pm2"/>
+		<result column="monitoring_station" property="monitoring_station"/>
+		<result column="last_modify_time" property="last_modify_time"/>
+		<association property="dis" column="district_id" select="queryson"></association>
+	</resultMap>
+
+
+<!-- 查询区域 -->
+	<select id="queryDistrict" resultType="District">
+		select * from District
+	</select>
+<!-- 按区域查询或查询所有 -->	
+	<select id="queryAll" resultMap="queryAllmap">
+		SELECT * FROM air_quality_index 
+			<where>
+					<if test="districtid!=null and districtid!=-1">
+						district_id=#{districtid}
+					</if>
+			</where>	
+	</select>
+<!-- 查询子表 -->	
+	<select id="queryson" resultType="District">
+		select * from District where id=#{0}
+	</select>
+	
+	
+<!-- 新增 -->
+	<insert id="insertAir">
+		INSERT INTO air_quality_index(district_id,monitor_time,pm10,pm2,monitoring_station) 
+		VALUE(#{air.district_id},#{air.monitor_time},#{air.pm10},#{air.pm2},#{air.monitoring_station})
+	</insert>
+	
+<!-- 删除 -->
+	<delete id="delAir">
+		delete from air_quality_index where id=#{id}
+	</delete>
+<!-- 加载单个空气值 -->	
+	<select id="loadAir" resultType="air_quality_index">
+			select * from air_quality_index where id=#{id}
+	</select>
+	
+	<update id="updateAir">
+		UPDATE air_quality_index SET district_id=#{air.district_id},monitor_time=#{air.monitor_time},pm10=#{air.pm10},pm2=#{air.pm2},monitoring_station=#{air.monitoring_station},last_modify_time=NOW()
+		where id=#{air.id}
+	</update>
+</mapper>

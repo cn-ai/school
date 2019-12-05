@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+    <mapper namespace="com.accp.order.dao.IStudentDao">
+    	<insert id="saveStudentAndClazz">	
+    		 INSERT INTO tb_clazz(cname) VALUES(#{clazz.clazzname});
+    		 <selectKey keyProperty="clazz.clazzid" resultType="int" order="BEFORE" keyColumn="cid">
+					SELECT MAX(cid)+1 FROM tb_clazz
+				</selectKey>
+    	</insert>
+    	<insert id="saveStudent">
+    	INSERT INTO tb_student (stuname,stuCardid,stusex,clazzid) VALUES			 
+ 			 (#{stu.sname},#{stu.sCardId},#{stu.sex},#{stu.clazzid}) 		
+    	</insert>
+    	
+    	<delete id="delStudent" >
+    		delete from tb_student where sid=#{sid}
+    	</delete>
+    	<update id="updateStudent">
+    		update tb_student set clazzid=#{stu.clazzid} where sid=#{stu.sid}
+    	</update>
+    	<!-- one-to-many 主表返回-->
+    	<resultMap type="com.accp.order.pojo.Clazz" id="oneMap">
+    		<id column="cid" property="clazzid"/>
+    		<result column="cname" property="clazzname"/>
+    	<collection property="student" column="cid" select="queryStu"></collection>	
+    	</resultMap>
+    	
+    	<resultMap type="com.accp.order.pojo.Student" id="stuMap">
+    		<id column="sid" property="sid"/>
+    		<result column="stuname" property="sname"/>
+    		<result column="Stucardid" property="sCardId"/>
+    		<result column="stusex" property="sex"/>
+    	</resultMap> 
+    	<!-- 查询子表 -->
+    	<select id="queryStu" resultMap="stuMap">
+    		select * from tb_student where clazzid=#{cid}
+    	</select>
+    	<!--one-to-many 主表 -->
+    	<select id="queryClazzAndStudent" resultMap="oneMap">
+    		select * from tb_clazz where cname=#{name}
+    	</select>
+    	
+    	<!-- many-to-one -->	
+    	<resultMap type="com.accp.order.pojo.Student" id="manyMap">
+    			<id column="sid" property="sid"/>
+    			<result column="stuname" property="sname"/>
+    			<result column="stucardid" property="sCardId"/>
+    			<result column="stusex" property="sex"/>
+    			<association property="clazz" select="queryClazz" column="clazzid">	</association>
+    	</resultMap>
+    	
+    	<resultMap type="com.accp.order.pojo.Clazz" id="clazzMap">
+    		<id column="cid" property="clazzid"/>
+    		<result column="cname" property="clazzname"/>
+    	</resultMap>
+    	
+    	<select id="queryClazz" resultMap="clazzMap">
+    		select * from tb_clazz where cid=#{clazzid}
+    	</select>
+    	
+    	<select id="queryStudentAndClazz" resultMap="manyMap">
+    		select * from tb_student where stuname=#{stuname}
+    	</select>
+    </mapper>
+    
+    

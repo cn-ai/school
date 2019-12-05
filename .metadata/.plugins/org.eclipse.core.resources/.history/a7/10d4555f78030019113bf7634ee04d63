@@ -1,0 +1,36 @@
+package com.example.demo.quartz;
+
+import org.quartz.CronScheduleBuilder;
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
+import org.quartz.impl.StdSchedulerFactory;
+
+import com.example.demo.quartz.job.MyJob;
+
+public class RunJob {
+	public static void main(String[] args) throws Exception {
+		// 配置任务规则
+		// 1.任务明细
+		JobDetail jDetail = JobBuilder.newJob(MyJob.class).withIdentity("j1", "g1").build();
+		// 2.触发器
+		Trigger trigger = TriggerBuilder.newTrigger().withIdentity("j1", "g1")
+				.withSchedule(CronScheduleBuilder.cronSchedule("0/5 * * * * ?")).build();
+		//启用调度
+		StdSchedulerFactory ssf=new StdSchedulerFactory();
+		Scheduler s=ssf.getScheduler();
+		//追加任务
+		s.scheduleJob(jDetail, trigger);
+		//暂停
+//		s.pauseJob(JobKey.jobKey("j1","g1"));
+		//移除
+//		s.deleteJob(JobKey.jobKey("j1", "g1"));
+		//恢复
+//		s.resumeJob(JobKey.jobKey("j1", "g1"));
+		//启动
+		s.start();
+	}
+}

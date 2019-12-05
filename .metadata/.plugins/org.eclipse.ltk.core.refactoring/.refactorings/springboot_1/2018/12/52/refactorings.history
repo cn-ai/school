@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;WebConfig.java&apos; to &apos;springboot_webscoket/src/main/java/com.example.demo.config&apos;&#x0D;&#x0A;- Original project: &apos;springboot_1&apos;&#x0D;&#x0A;- Destination element: &apos;springboot_webscoket/src/main/java/com.example.demo.config&apos;&#x0D;&#x0A;- Original element: &apos;com.accp.xxmis.cfg.WebConfig.java&apos;" description="Copy compilation unit" destination="=springboot_webscoket/src\/main\/java&lt;com.example.demo.config" element1="/src\/main\/java&lt;com.accp.xxmis.cfg{WebConfig.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1545616809432" units="1" version="1.0"/>
+</session>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy 3 elements to &apos;homework_mybatis03/src/main/resources&apos;&#x0D;&#x0A;- Original project: &apos;homework_mybatis02&apos;&#x0D;&#x0A;- Destination element: &apos;homework_mybatis03/src/main/resources&apos;&#x0D;&#x0A;- Original elements:&#x0D;&#x0A;     mapper.xml&#x0D;&#x0A;     config.xml&#x0D;&#x0A;     log4j.properties" description="Copy files" destination="=homework_mybatis03/src\/main\/resources" element1="src/main/resources/mapper.xml" element2="src/main/resources/config.xml" element3="src/main/resources/log4j.properties" files="3" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1540785289634" units="0" version="1.0"/>
+</session>

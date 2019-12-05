@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="com.accp.jboa.dao.ILeaveDao">
+<!-- 新增 请假-->
+	<insert id="addLeave" parameterType="tb_leave" useGeneratedKeys="true" keyProperty="leave.leaveid" >
+		INSERT INTO `tb_leave` (
+		  `createMan`,
+		  `departmentId`,
+		  `createTime`,
+		  `startTime`,
+		  `endTime`,
+		  `nextDealMan`,
+		  `event`,
+		  `totalCount`,
+		  `statusId`
+		) 
+		VALUES
+		  (
+		    #{leave.createman},
+		    #{leave.departmentid},
+		    NOW(),
+		    #{leave.starttime},
+		    #{leave.endtime},
+		    #{leave.nextdealman},
+		    #{leave.event},
+		    #{leave.totalcount},
+		    2
+		  ) ;
+	</insert>
+	
+	<!-- 新增消息 -->
+	<insert id="addMessage">
+		INSERT INTO `tb_message` (
+		  `addresser_id`,
+		  `addressees_id`,
+		  `type_id`,
+		  `context`,
+		  `biz_id`,
+		  createDate
+		) 
+		VALUES
+		  (
+		     #{leave.createman},
+		     #{leave.nextdealman},
+		    1,
+		    #{leave.totalcount},
+		    #{leave.leaveid},
+		    now()
+		  ) ;
+	</insert>
+	
+<!-- 查看请假及详情 -->
+		<resultMap type="tb_leave" id="Check">
+		<id column="leaveId" property="leaveid"/>
+		<result column="typeId" property="typeid"/>
+		<result column="createMan" property="createman"/>
+		<result column="createManName" property="createManName"/>
+		<result column="departmentId" property="departmentid"/>
+		<result column="departmentName" property="departmentName"/>
+		<result column="createTime" property="createtime"/>
+		<result column="startTime" property="starttime"/>
+		<result column="endTime" property="endtime"/>
+		<result column="nextDealMan" property="nextdealman"/>
+		<result column="nextDealManName" property="nextdealmanname"/>
+		<result column="event" property="event"/>
+		<result column="totalCount" property="totalcount"/>
+		<result column="statusId" property="statusid"/>
+		<result column="statusName" property="statusName"/>
+		<collection property="check" column="leaveid" select="queryChecks"></collection>
+	</resultMap>
+	<select id="queryLeave" resultMap="Check">
+		SELECT l.*,e1.`employeeName` AS nextDealManName , e2.`employeeName` AS createManName,s.`statusName`,d.`departmentName`  FROM `tb_leave` AS l
+		LEFT JOIN `employee` AS e1 ON e1.`employeeId` = l.`nextDealMan`
+		LEFT JOIN `employee` AS e2 ON e2.`employeeId` = l.`createMan`
+		LEFT JOIN `tb_status` AS s ON l.`statusId` = s.`statusId`
+		LEFT JOIN `department` AS d ON l.`departmentId` = d.`departmentId`
+		<where>
+			<if test="leave.leaveid!=null and leave.leaveid!='' and leave.leaveid!=0">
+				AND l.`leaveId` = #{leave.leaveid}
+			</if>
+			<if test="leave.starttime!=null">
+				AND l.`startTime` &gt; #{leave.starttime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="leave.endtime!=null">
+				AND l.`endTime` &lt;  #{leave.endtime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="emp.positionid!=1 and emp.positionid!=0 and emp.positionid!=4">
+				AND l.`createMan` = #{emp.employeeid}
+			</if>
+			<if test="emp.positionid==1">
+				AND l.`departmentId` = #{leave.departmentid}
+			</if>
+		</where>
+		ORDER BY l.`createTime` DESC
+	</select>
+	<select id="queryChecks" parameterType="int" resultType="tb_check">
+		SELECT c.*,e1.`employeeName` AS checkManName,r.`resultName` AS checkResultName FROM `tb_check` AS c
+		LEFT JOIN `employee` AS e1 ON e1.`employeeId` = c.`checkMan`
+		LEFT JOIN `check_result` AS r ON c.`checkResult` = r.`resultId`
+		WHERE c.`bizId` = #{0} AND c.`typeId` =  1 
+	</select>
+	
+	<!-- 审批请假 -->
+	<insert id="updateLeave" >
+		<!-- 新增审批统计表 -->
+		INSERT INTO `tb_check` (
+		  `bizId`,
+		  `typeId`,
+		  `checkTime`,
+		  `checkMan`,
+		  `checkResult`,
+		  `checkComment`
+		) 
+		VALUES
+		  (
+		    #{check.bizid},
+		    1,
+		    NOW(),
+		    #{check.checkman},
+		    #{check.checkresult},
+		    #{check.checkcomment}
+		  ) ;
+		  <!-- 修改请假表 -->
+		  UPDATE 
+			  `tb_leave` 
+		  SET
+			  `statusId` = 4,
+			  `nextDealMan` = 1000
+		  WHERE `leaveId` = #{check.bizid} ;
+		  <!-- 修改消息 -->
+		  UPDATE 
+			  `tb_message` 
+		  SET
+			  `message_sta` = 1
+		  WHERE `biz_id` = #{check.bizid} AND `addressees_id`  = #{check.checkman};
+		  <!-- 新增消息 -->
+		   INSERT INTO `tb_message` (
+			  `addresser_id`,
+			  `addressees_id`,
+			  `type_id`,
+			  `message_sta`,
+			  `context`,
+			  `biz_id`,
+			  createDate
+			) 
+			VALUES
+			  (
+			     #{check.checkman},
+			     #{leave.nextdealman},
+			     
+			     1,
+			     2,
+			     #{check.checkcomment},
+			     #{check.bizid},
+			     now()
+			  ) ;
+		  
+	</insert>
+	<!-- 查看信箱中的信息 -->
+	<select id="queryMessage" resultType="tb_message">
+		SELECT m.*,e1.`employeeName` AS addresserName,e2.`employeeName` AS addresseesName FROM `tb_message` AS m
+		LEFT JOIN `employee` AS e1 ON e1.`employeeId` = m.`addresser_id`
+		LEFT JOIN `employee` AS e2 ON e2.`employeeId` = m.`addressees_id`
+		WHERE m.`addressees_id` = #{addressees_id}
+		ORDER BY m.`message_sta`,m.`createDate` DESC
+	</select>
+	<!-- 查看信息后修改信息状态 -->
+	<update id="updateMessage">
+		 UPDATE 
+			  `tb_message` 
+		  SET
+			  `message_sta` = 3
+		  WHERE `biz_id` = #{bizId} AND `addressees_id`  = #{addressees_id};
+	</update>
+	</mapper>

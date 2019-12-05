@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.accp.vote.dao.IVoteDao">
+  	<sql id="query">
+  		select * from 
+  	</sql>
+  	<!-- 登录 -->
+  	<select id="Login" resultType="user">
+  		<include refid="query"></include>
+  		user 
+  		<where>
+  			<if test="uname!=null">
+  				uname=#{uname}
+  			</if>
+  			<if test="upwd!=null">
+  				and upwd=#{upwd}
+  			</if>
+  		</where>
+  	</select>	
+  	<!-- 注册 -->
+  	<insert id="saveReg">
+  		insert into user (uname,upwd) values(#{uname},#{upwd})
+  	</insert>
+<!-- 查询登录后的主页 -->
+	<!-- 一对多 -->
+	 <resultMap type="com.accp.vote.pojo.Subject" id="submap">
+		<id column="id" property="id"/>
+		<result column="title" property="title"/>
+		<result column="startDate" property="startDate"/>
+		<result column="overDate" property="overDate"/>
+		<result column="join" property="join"/>
+		<result column="way" property="way"/>
+		<result column="uid" property="uid"/>
+		<result column="stoptype" property="stoptype"/>
+		<collection property="option" column="id" select="queryoption">	
+		</collection>		
+	</resultMap> 
+<!-- 查询子表option -->
+	  <select id="queryoption" resultType="option">
+		SELECT * FROM `option` WHERE  sid=#{id}
+	</select>  
+<!-- 查询主表subject -->
+	<select id="querySub" resultMap="submap">
+		select * from `subject` 
+		 <where>
+			<if test="title!=null and title!=''">
+				and title like '%${title}%'
+			</if>			
+		</where> 
+	</select>
+	<!-- 修改前的查询 -->
+	<select id="loadSub" resultMap="submap">
+	 	select * from `subject` where id=#{sid}
+	</select>
+	<!-- 维护 -->
+	<update id="updateSub">
+		update `subject` s left join `option` o on s.id=o.sid 
+		<set>
+			<if test="sub.title!=null">
+				s.title=#{sub.title},
+			</if>
+			<if test="sub.type!=null and sub.type!=-1">
+				s.type=#{sub.type},
+			</if>
+			<if test="sub.startDate!=null">
+				s.startdate=#{sub.startDate},
+			</if>
+			<if test="sub.overDate!=null">
+				s.overDate=#{sub.overDate},
+			</if>
+			<if test="sub.join!=null and sub.join!=-1">
+				s.join=#{sub.join},
+			</if>
+			<if test="sub.way!=null and sub.way!=-1">
+				s.way=#{sub.way},
+			</if>
+			<if test="sub.uid!=null and sub.uid!=-1">
+				s.uid=#{sub.uid},
+			</if>
+			<if test="sub.stoptype!=null and sub.stoptype!=-1">
+				s.stoptype=#{sub.stoptype},
+			</if>
+			<if test="sub.option!=null">
+				<foreach collection="sub.option" item="temp" separator=",">
+				o.option=#{temp.option},o.sid=#{sub.id}
+				</foreach>
+			</if>
+		</set>
+		<where>
+			s.id=#{sub.id}
+		</where>
+	</update>
+	
+ </mapper>  

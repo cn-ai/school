@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="com.accp.jboa.dao.IRemburseDao">
+    <!-- 新增报销表之前查询主键id -->
+    	<select id="queryRemburse" resultType="Integer">
+    		SELECT MAX(reimburseid) FROM tb_reimburse
+    	</select>
+   <!-- 新增报销表 -->
+    	<insert id="addRemburse">
+    		INSERT INTO tb_reimburse
+    		(reimburseid,typeId,createMan,createTime,departmentId,nextDealMan,`event`,totalCount,statusId)	
+    		VALUE(#{remburse.reimburseid},2,#{remburse.createman},now(),#{remburse.departmentid},#{remburse.nextdealman},#{remburse.event},#{remburse.totalcount},#{remburse.statusid});
+    		<if test="remburse.details.size()!=0">
+    		<!-- 新增详表 -->
+    		INSERT INTO reimburse_detail(mainId,subTotal,`desc`,pictureName,picturePath) VALUE
+    		<foreach collection="remburse.details" item="temp" separator=",">
+    			(#{remburse.reimburseid},#{temp.subtotal},#{temp.desc},#{temp.pictruename},#{temp.pictruepath})
+    		</foreach>
+    		;
+    		</if>
+    		<!-- 新增记录表 -->
+    		INSERT INTO tb_check
+    		(bizid,typeid,checkman)
+    	values(#{remburse.reimburseid},2,#{remburse.nextdealman});
+    	<!-- 新增统计表 -->
+    	INSERT INTO tb_count
+    	(money,`year`,`month`,departmentid,employeeid)
+    	value(#{remburse.totalcount},#{year},#{month},#{remburse.departmentid},#{remburse.createman});
+    	</insert>
+    	
+   <!-- 查询报销列表 -->
+   	<resultMap type="com.accp.jboa.vo.ReimburseVo" id="remap1">
+   		<result property="employeeid" column="employeeid"/>
+   		<result property="employeename" column="employeename"/>
+   		<result property="password" column="password"/>
+   		<result property="positionid" column="positionid"/>
+   		<result property="status" column="status"/>
+   		<result property="pid" column="pid"/>
+   		<result property="reimburseid" column="reimburseid"/>
+   		<result property="typeid" column="typeid"/>
+   		<result property="createman" column="createman"/>
+   		<result property="createtime" column="createtime"/>
+   		<result property="departmentid" column="departmentid"/>
+   		<result property="nextdealman" column="nextdealman"/>
+   		<result property="event" column="event"/>
+   			<result property="bizid" column="bizid"/>
+   		
+   		<result property="totalcount" column="totalcount"/>
+   		 <result property="nextpreson" column="nextpreson"/>
+   		<result property="statusid" column="statusid"/>
+   		<result property="statusname" column="statusname"/>	
+   	</resultMap>
+   
+   		<select id="queryList" resultMap="remap1">
+   			SELECT * FROM tb_reimburse re
+ 			LEFT JOIN employee emp
+			ON emp.employeeId =re.createman
+			LEFT JOIN tb_status s
+			ON re.statusid=s.statusid
+			<where>
+				<if test="emp.employeename!=null and emp.employeename!=''">
+					emp.employeeName=#{emp.employeename}
+				</if>
+				<if test="account!=null  and account!=-1">
+					and s.statusid=#{account}
+				</if>
+				<if test="starttime!=null  and starttime!=''">
+					and re.createtime&gt;=#{starttime}
+				</if>
+				<if test="endtime!=null  and endtime!=''">
+					and re.createtime&lt;=#{endtime}
+				</if>
+				<if test="emp.pid!=null and emp.pid!='-1'">
+					or emp.pid=#{emp.pid}
+				</if> 
+				
+			</where>
+			order by createtime desc
+   		</select>
+ <!-- 查询所有状态 -->  		
+   	<select id="queryStatus" resultType="tb_status">
+   		select * from tb_status
+   	</select>
+<!-- 查询上一级 -->
+   	<select id="queryParent" resultMap="remap1"> 		
+		SELECT DISTINCT(e.employeename) FROM employee e LEFT JOIN tb_reimburse r ON e.employeeid=r.createman WHERE  e.employeeid=#{pid}
+   	</select>
+  <!-- 查询详情主 --> 	
+   	<select id="queryDetail" resultMap="remap1">
+   		SELECT * FROM tb_reimburse re
+ 			LEFT JOIN employee emp
+			ON emp.employeeId =re.createman
+			LEFT JOIN tb_status s
+			ON re.statusid=s.statusid
+			where 	re.`reimburseId`=#{reimburseid}
+			
+   	</select>
+ <!-- 查询详情 -->
+	<select id="queryDetailList" resultMap="demap1">
+		SELECT * FROM tb_reimburse re INNER JOIN reimburse_detail de ON re.`reimburseId`=de.mainid WHERE re.`reimburseId`=#{reimburseid}
+	</select>
+<!-- 查询审查 -->
+	<select id="querycheckList" resultMap="che1">
+	SELECT * FROM tb_check c INNER JOIN tb_reimburse re ON re.reimburseId=c.bizid 
+		INNER JOIN check_result result
+		ON c.checkResult=result.resultId
+ 	
+	WHERE c.bizid=#{reimburseid}  AND c.typeid=#{typeid}
+
+	</select>
+	
+<!-- 详情的map -->
+	 <resultMap type="com.accp.jboa.vo.ReimburseVo" id="demap1">
+		<result column="reimburseid" property="reimburseid"/>
+				<result column="subtotal" property="subtotal"/>	
+				<result column="desc" property="desc"/>
+					<result column="picturename" property="pictruename"/>
+						<result column="picturepath" property="pictruepath"/>
+		
+	</resultMap>	
+<!-- 审查map -->
+	<resultMap type="com.accp.jboa.vo.ReimburseVo" id="che1">
+		<result column="reimburseid" property="reimburseid"/>
+				<result column="scheckman" property="checkman"/>	
+				<result column="checkcomment" property="checkcomment"/>
+					<result column="pictruename" property="pictruename"/>
+						<result column="checktime" property="checktime"/>
+						<result column="resultname" property="resultname"/>
+	</resultMap>	
+<!-- 新增审查 -->
+
+<insert id="addsp">
+ <!-- 修改请假表 -->
+		    UPDATE 
+			  `tb_reimburse` 
+		  SET
+			  `statusId` = 4,
+			  `nextDealMan` = 1003
+		  WHERE `reimburseid` = #{check.bizid};
+		  
+		INSERT INTO tb_check
+		 (bizid,typeid,checkTime,checkMan,checkResult,checkComment)
+		 VALUE
+		 (#{check.bizid},2,NOW(),#{check.checkman},#{check.checkresult},#{check.checkcomment})
+		 
+		  </insert>
+    </mapper>
